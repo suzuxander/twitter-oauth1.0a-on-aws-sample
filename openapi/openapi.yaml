@@ -1,0 +1,130 @@
+openapi: 3.0.0
+info:
+  title: 'twitter oauth1a sample'
+  version: 1.0.0
+paths:
+  /:
+    get:
+      description: '../app/api/auth/get.ts'
+      parameters: []
+      responses:
+        '302':
+          description: 'Found'
+        '500':
+           description: 'Internal Server Error'
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ServerError'
+      x-amazon-apigateway-integration:
+        contentHandling: CONVERT_TO_TEXT
+        httpMethod: POST
+        passthroughBehavior: when_no_match
+        responses:
+          default:
+            statusCode: '200'
+        type: aws_proxy
+        uri: >-
+          arn:aws:apigateway:{REGION}:lambda:path/2015-03-31/functions/arn:aws:lambda:{REGION}:{ACCOUNT_ID}:function:twitter-oauth1a-sample-api-authorize/invocations
+  /callback:
+    get:
+      description: '../app/api/callback/get.ts'
+      parameters:
+        - in: query
+          name: code
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: state
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCallbackResponse'
+        '302':
+          description: 'Found'
+        '500':
+           description: 'Internal Server Error'
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ServerError'
+      x-amazon-apigateway-integration:
+        contentHandling: CONVERT_TO_TEXT
+        httpMethod: POST
+        passthroughBehavior: when_no_match
+        responses:
+          default:
+            statusCode: '200'
+        type: aws_proxy
+        uri: >-
+          arn:aws:apigateway:{REGION}:lambda:path/2015-03-31/functions/arn:aws:lambda:{REGION}:{ACCOUNT_ID}:function:twitter-oauth1a-sample-api-callback/invocations
+  /token:
+    get:
+      description: '../app/api/token/get.ts'
+      parameters:
+        - name: oauth_token
+          in: query
+          schema:
+            type: string
+          required: true
+        - name: oauth_verifier
+          in: query
+          schema:
+            type: string
+          required: true
+      responses:
+        '302':
+          description: 'Found'
+        '500':
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+      x-amazon-apigateway-integration:
+        contentHandling: CONVERT_TO_TEXT
+        httpMethod: POST
+        passthroughBehavior: when_no_match
+        responses:
+          default:
+            statusCode: '200'
+        type: aws_proxy
+        uri: >-
+          arn:aws:apigateway:{REGION}:lambda:path/2015-03-31/functions/arn:aws:lambda:{REGION}:{ACCOUNT_ID}:function:twitter-oauth1a-sample-api-get-token/invocations
+components:
+  schemas:
+    GetCallbackResquest:
+      type: object
+      properties:
+        state:
+          type: string
+          nullable: false
+        code:
+          type: string
+          nullable: false
+    GetCallbackResponse:
+      type: object
+    ServerError:
+      type: object
+      properties:
+        message:
+          type: string
+    GetAccessTokenRequest:
+      type: object
+      required:
+        - oauth_token
+        - oauth_verifier
+      properties:
+        oauth_token:
+          type: string
+          nullable: false
+        oauth_verifier:
+          type: string
+          nullable: false

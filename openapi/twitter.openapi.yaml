@@ -1,0 +1,77 @@
+openapi: 3.0.0
+info:
+  title: 'twitter api'
+  version: 1.0.0
+servers:
+  - url: 'https://api.twitter.com'
+paths:
+  /oauth/request_token:
+    post:
+      description: 'get request token'
+      parameters:
+        - in: header
+          name: authorization
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            text/html:
+              schema:
+                $ref: '#/components/schemas/PostRequestTokenResponse'
+  /oauth/access_token:
+    post:
+      description: 'get access token'
+      parameters:
+        - in: header
+          name: authorization
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            text/html:
+              schema:
+                $ref: '#/components/schemas/PostAccessTokenResponse'
+components:
+  schemas:
+    PostRequestTokenResponse:
+      type: string
+    PostAccessTokenResponse:
+      type: string
+    ParsedPostRequestTokenResponse:
+      type: object
+      required:
+        - oauth_token
+        - oauth_token_secret
+      properties:
+        oauth_token:
+          type: string
+          nullable: false
+        oauth_token_secret:
+          type: number
+          nullable: false
+    ParsedAccessTokenResponse:
+      type: object
+      required:
+        - oauth_token
+        - oauth_token_secret
+        - user_id
+        - screen_name
+      properties:
+        oauth_token:
+          type: string
+          nullable: false
+        oauth_token_secret:
+          type: number
+          nullable: false
+        user_id:
+          type: string
+          nullable: false
+        screen_name:
+          type: string
+          nullable: false
