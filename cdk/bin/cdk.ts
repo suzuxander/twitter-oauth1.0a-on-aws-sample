@@ -96,7 +96,7 @@ const main = (): void => {
           API_KEY: API_KEY,
           API_KEY_SECRET: API_KEY_SECRET,
           BUCKET: bucket.bucketName as string,
-          REDIRECT_URI: `https://${api.restApiId}.execute-api.${cdk.Aws.REGION}.${cdk.Aws.URL_SUFFIX}/${api.deploymentStage.stageName}/callback`,
+          CALLBACK_URL: `https://${api.restApiId}.execute-api.${cdk.Aws.REGION}.${cdk.Aws.URL_SUFFIX}/${api.deploymentStage.stageName}/callback`,
         }
       });
       func.addPermission('Permission', {

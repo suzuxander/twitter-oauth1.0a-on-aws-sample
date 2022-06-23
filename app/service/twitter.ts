@@ -1,8 +1,7 @@
-import { DefaultApi, ParsedAccessTokenResponse, ParsedPostRequestTokenResponse } from '../../gen/twitter';
+import { DefaultApi, ParsedAccessTokenResponse, ParsedPostRequestTokenResponse } from 'gen/twitter';
 import * as uuid from 'uuid';
-import config from '../config';
+import config from 'app/config';
 import crypto from 'crypto';
-import * as s3client from './s3';
 
 const TWITTER_API_REQUEST_TOKEN = 'https://api.twitter.com/oauth/request_token';
 const TWITTER_API_ACCESS_TOKEN = 'https://api.twitter.com/oauth/access_token';
@@ -62,11 +61,6 @@ const generateAuthorizationHeader = (method: string, url: string, parameters: { 
 
 export const getRequestToken = async (): Promise<ParsedPostRequestTokenResponse> => {
   const oauthParameters: { [p: string]: string } = {
-    // oauth_timestamp: Math.floor(Date.now() / 1000).toString(),
-    // oauth_nonce: uuid.v4(),
-    // oauth_version: '1.0',
-    // oauth_signature_method: 'HMAC-SHA1',
-    // oauth_consumer_key: config.apiKey,
     oauth_callback: config.callbackUrl,
   };
 

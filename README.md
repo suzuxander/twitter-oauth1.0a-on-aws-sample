@@ -5,34 +5,35 @@ API Gateway + Lambda関数を使用して認可等を行う。実装言語はTyp
 AWSリソースのデプロイはCDKにより行う。
 
 ## 前提
-以下はインストール済みとする。
-- NodeJS 16くらい
-- Java 8くらい (openapi-generatorを実行する際に必要)
+- Twitter Developerの登録が完了している
+- 以下はインストール済みとする
+   - NodeJS 16くらい
+   - Java 8くらい (openapi-generatorを実行する際に必要)
 
 ## セットアップ
-### Twitter Developer Portalの設定
+### 1. Twitter Developer Portalの設定
 Twitterの[Developer Portal](https://developer.twitter.com/en/portal/dashboard)にてProject or Appを追加し、以下設定を行う。
 - `OAuth1.0a`を有効化する
 - `Callback URI / Redirect URL`はこの時点では適当な値を設定しておく
 - 保存した際に生成される`API Key`、`API Key Secret`などのクレデンシャル情報は必ずメモしておく
 
-### 必要なライブラリのインストール
-```
+### 2. 必要なライブラリのインストール
+```bash
 $ npm run init
 ```
-### CDKデプロイ用の環境変数を設定
-```
+### 3. CDKデプロイ用の環境変数を設定
+```bash
 $ vim .env
 ACCOUNT_ID={ACCOUNT_ID}          # AWSのアカウントID
 REGION={REGION}                  # AWSリソースをデプロイするリージョン
-BUCKET={BUCKET}                  # code_verifierを保存するバケット
-API_KEY={API_KEY}                # "Twitterの設定 1"でメモした値
-API_KEY_SECRET={API_KEY_SECRET}  # "Twitterの設定 1"でメモした値
-CALLBACK_URL={CALLBACK_URL}      # "Twitterの設定 1"でメモした値
-API_BASE_PATH={API_BASE_PATH}    # 
+BUCKET={BUCKET}                  # oauth_token_secretを保存するバケット
+API_KEY={API_KEY}                # Twitter Developer Portalで設定を行った際に取得したAPI Key
+API_KEY_SECRET={API_KEY_SECRET}  # Twitter Developer Portalで設定を行った際に取得したAPI Key Secret
+CALLBACK_URL={CALLBACK_URL}      # 一旦適当な値を設定
+API_BASE_PATH={API_BASE_PATH}    # 一旦適当な値を設定
 ```
-### CDKデプロイ
-```
+### 4. CDKデプロイ
+```bash
 $ npm run deploy
 
 twitter-oauth1a-sample: creating CloudFormation changeset...
@@ -45,32 +46,46 @@ Outputs:
 twitter-oauth1a-sample.ApiEndpoint00000000 = https://xxxxxxxxxx.execute-api.ap-northeast-1.amazonaws.com/dev/
 
 ```
-### リダイレクトURLの変更
+### 5. コールバックURLの変更
 Twitterの[Developer Portal](https://developer.twitter.com/en/portal/dashboard)で`Callback URI / Redirect URL`の値をデプロイで生成されたAPIのエンドポイント + `callback`に変更する。  
 ```
 https://xxxxxxxxxx.execute-api.ap-northeast-1.amazonaws.com/dev/callback
 ```
+### 6. CDKデプロイ用の環境変数を再設定
+適当な値を入れていたコールバックURLをデプロイで生成されたAPIのエンドポイント + `callback`に変更する。
+```bash
+$ vim .env
+CALLBACK_URL=https://xxxxxxxxxx.execute-api.ap-northeast-1.amazonaws.com/dev/callback 
+```
+### 7. CDKデプロイ
+コールバックURLの変更を反映させるために再度デプロイを実行する。
+```bash
+$ npm run deploy
+```
 
-### 動作確認
-1. デプロイで生成されたAPIの以下エンドポイントにブラウザからアクセスする
-   ```
-   https://xxxxxxxxxx.execute-api.ap-northeast-1.amazonaws.com/dev/
-   ```
-1. 「◯◯◯にアカウントへのアクセスを許可しますか？」という画面が表示されるので、「アプリにアクセスを許可」をクリックする
-1. 以下のようにレスポンスの内容が表示されれば、Twitterの認証ページからのコールバックが受け取れている
-   ```json
-   {"oauth_token":"{OAUTH_TOKEN}","oauth_verifier":"{OAUTH_VERIFIER}"}
-   ```
-1. 以下のURLにブラウザからアクセスする (curlでもOK)
-   `oauth_token`、`oauth_verifier`はコールバックで受け取った値を入れる
-   ```
-   https://xxxxxxxxxx.execute-api.ap-northeast-1.amazonaws.com/dev/token?oauth_token={OAUTH_TOKEN}&oauth_verifier={OAUTH_VERIFIER}
-   ```
-   以下のようにレスポンスが表示されればアクセストークンの取得が成功している
-   ```json
-   {"userId":"{TWITTER_USER_ID}","userName":"{TWITTER_USER_NAME}"}
-   ```
-   ```
+## 動作確認
+### 1. 認証ページにアクセス
+デプロイで生成されたAPIの以下エンドポイントにブラウザからアクセスする。
+```
+https://xxxxxxxxxx.execute-api.ap-northeast-1.amazonaws.com/dev/
+```
+### 2. アカウントへのアクセスに許可
+「◯◯◯にアカウントへのアクセスを許可しますか？」という画面が表示されるので、「アプリにアクセスを許可」をクリックする。  
+以下のようにレスポンスの内容が表示されれば、Twitterの認証ページからのコールバックが受け取れている。
+```json
+{"oauth_token":"{OAUTH_TOKEN}","oauth_verifier":"{OAUTH_VERIFIER}"}
+```
+
+### 3. アクセストークンの取得
+以下のURLにブラウザからアクセスする。 (curlなどでもOK)  
+`oauth_token`、`oauth_verifier`はコールバックで受け取った値を入れる。
+```
+https://xxxxxxxxxx.execute-api.ap-northeast-1.amazonaws.com/dev/token?oauth_token={OAUTH_TOKEN}&oauth_verifier={OAUTH_VERIFIER}
+```
+以下のようにレスポンスが表示されればアクセストークンの取得が成功している。
+```json
+{"oauth_token":"{OAUTH_TOKEN}","oauth_token_secret":"{OAUTH_TOKEN_SECRET}","user_id":"{USER_ID}","screen_name":"{SCREEN_NAME}"}
+```
 
 ## APIの説明
 ### [GET /](./app/api/auth/get.ts)  
@@ -83,7 +98,8 @@ Twitterの認証ページから受け取ったパラメータを返却してい�
   
 ### [GET /token](./app/api/token/get.ts)
 access_tokenを取得するためのエンドポイント。  
-callbackで受け取ったstateとcodeをパラメータで付与してリクエストをくることでaccess_tokenを取得する。
+callbackで受け取ったoauth_tokenとoauth_verifierをパラメータで付与してリクエストをくることでaccess_tokenを取得する。
   
-## Twitter OAuth2.0
-https://developer.twitter.com/en/docs/authentication/oauth-1-0a
+## Twitter OAuth1.0a
+プロセスや詳細な手順については[こちら](https://developer.twitter.com/ja/docs/authentication/oauth-1-0a/obtaining-user-access-tokens)を参照。  
+実装は[こちら](./app/service/twitter.ts)。

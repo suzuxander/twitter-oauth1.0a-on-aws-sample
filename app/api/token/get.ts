@@ -8,19 +8,14 @@ const main = async (oauthToken: string, oauthVerifier: string): Promise<any> => 
   // request_token取得時にs3に保管していたoauth_token_secretを取得する
   const oauthTokenSecret = await s3client.getObject(config.bucket, oauthToken);
 
-  const response = await getAccessToken(
+  return await getAccessToken(
     oauthToken, oauthTokenSecret.toString(), oauthVerifier);
-
-  return {
-    userId: response.user_id,
-    userName: response.screen_name,
-  };
 };
 
 export const handler = async (event: APIGatewayEvent, context: any, callback: Callback): Promise<void> => {
   try {
     const query = event.queryStringParameters as any as GetAccessTokenRequest;
-    const data = await main(query.oauthToken, query.oauthVerifier);
+    const data = await main(query.oauth_token, query.oauth_verifier);
     return callback(null, {
       statusCode: 200 ,
       body: JSON.stringify(data)

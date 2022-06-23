@@ -10,7 +10,7 @@ const config = {
   apiKeySecret: getEnvironment('API_KEY_SECRET'),
   callbackUrl: getEnvironment('CALLBACK_URL'),
   bucket: getEnvironment('BUCKET'),
-  apiBathPath: getEnvironment('API_BASE_PATH'),
+  apiBasePath: process.env.API_BASE_PATH ?? '',
 };
 
 export default config;

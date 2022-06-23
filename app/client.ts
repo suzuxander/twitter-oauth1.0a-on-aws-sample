@@ -15,7 +15,7 @@ import config from 'app/config';
     console.error('You need oauthVerifier!');
   }
   const client = new DefaultApi({
-    basePath: config.apiBathPath
+    basePath: config.apiBasePath
   } as any);
   const res = await client.tokenGet(oauthToken, oauthVerifier);
   console.log(res.data);
