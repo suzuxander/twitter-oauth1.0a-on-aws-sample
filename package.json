@@ -1,0 +1,51 @@
+{
+  "name": "twitter-oauth1a-sample",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "init": "sh script/init.sh",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "watch": "webpack -w",
+    "generate:sample": "openapi-generator-cli generate --generator-key sample",
+    "generate:twitter": "openapi-generator-cli generate --generator-key twitter",
+    "pregenerate": "rm -rf gen",
+    "generate": "openapi-generator-cli generate --generator-key sample twitter",
+    "predeploy": "npm run generate",
+    "deploy": "cd cdk && npm run deploy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/suzuxander/twitter-oauth1a-on-aws-sample.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/suzuxander/twitter-oauth1a-on-aws-sample/issues"
+  },
+  "homepage": "https://github.com/suzuxander/twitter-oauth1a-on-aws-sample#readme",
+  "dependencies": {
+    "aws-lambda": "^1.0.7",
+    "aws-sdk": "^2.1152.0",
+    "axios": "^0.26.1",
+    "dotenv": "^16.0.1",
+    "js-yaml": "^3.14.1",
+    "typescript": "^4.7.3",
+    "uuid": "^8.0.0"
+  },
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.5.1",
+    "@types/axios": "^0.14.0",
+    "@types/aws-lambda": "^8.10.99",
+    "@types/dotenv": "^8.2.0",
+    "@types/oauth": "^0.9.1",
+    "@types/js-yaml": "^4.0.5",
+    "@types/node": "^17.0.41",
+    "@types/uuid": "^8.3.4",
+    "aws-cdk": "^2.27.0",
+    "ts-loader": "^9.3.0",
+    "webpack": "^5.73.0",
+    "webpack-cli": "^4.9.2"
+  }
+}
