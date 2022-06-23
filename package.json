@@ -1,11 +1,10 @@
 {
-  "name": "twitter-oauth1a-sample",
+  "name": "twitter-oauth1.0a-on-aws-sample",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "init": "sh script/init.sh",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
     "watch": "webpack -w",
     "generate:sample": "openapi-generator-cli generate --generator-key sample",
@@ -17,14 +16,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/suzuxander/twitter-oauth1a-on-aws-sample.git"
+    "url": "git+https://github.com/suzuxander/twitter-oauth1.0a-on-aws-sample.git"
   },
-  "author": "",
+  "author": "suzuxander",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/suzuxander/twitter-oauth1a-on-aws-sample/issues"
-  },
-  "homepage": "https://github.com/suzuxander/twitter-oauth1a-on-aws-sample#readme",
   "dependencies": {
     "aws-lambda": "^1.0.7",
     "aws-sdk": "^2.1152.0",

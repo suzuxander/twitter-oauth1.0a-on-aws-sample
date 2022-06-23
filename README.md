@@ -1,4 +1,4 @@
-# twitter-oauth1a-on-aws-sample
+# twitter-oauth1.0a-on-aws-sample
 ## 概要
 TwitterのOAuth1.0aを使用するプロジェクトのサンプル。  
 API Gateway + Lambda関数を使用して認可等を行う。実装言語はTypescript。  
@@ -102,4 +102,4 @@ callbackで受け取ったoauth_tokenとoauth_verifierをパラメータで付�
   
 ## Twitter OAuth1.0a
 プロセスや詳細な手順については[こちら](https://developer.twitter.com/ja/docs/authentication/oauth-1-0a/obtaining-user-access-tokens)を参照。  
-実装は[こちら](./app/service/twitter.ts)。
+本プロジェクトでの実装は[こちら](./app/service/twitter.ts)。
